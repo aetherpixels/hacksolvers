@@ -124,7 +124,7 @@ export default function CustomerDashboard() {
           <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-lg border-2 border-red-100 animate-in zoom-in-95 duration-200">
             <div className="flex items-center gap-3 mb-2 text-red-600">
               <Zap size={24} />
-              <h2 className="text-2xl font-extrabold text-gray-900">What's the emergency?</h2>
+              <h2 className="text-2xl font-extrabold text-gray-900">What&apos;s the emergency?</h2>
             </div>
             <p className="text-gray-500 font-medium mb-6">Select the required service. We will dispatch the nearest verified worker immediately.</p>
             
