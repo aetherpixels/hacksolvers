@@ -1,0 +1,137 @@
+"use client";
+import React from 'react';
+import { useAppContext } from '@/components/Providers';
+import { mockServices } from '@/lib/data';
+import { Clock, CheckCircle, AlertCircle, Star, Navigation, MapPin, Search } from 'lucide-react';
+import Link from 'next/link';
+
+export default function OrderTracking() {
+  const { bookings, currentUser, language, setBookings } = useAppContext();
+
+  if (!currentUser) return null;
+
+  const myBookings = bookings.filter(b => b.customerId === currentUser.id);
+
+  const getStatusIcon = (status: string) => {
+    switch(status) {
+      case 'Pending': return <Clock className="text-yellow-500" />;
+      case 'Accepted': return <Navigation className="text-indigo-500" />;
+      case 'Completed': return <CheckCircle className="text-emerald-500" />;
+      default: return <AlertCircle className="text-red-500" />;
+    }
+  };
+
+  const handleRate = (id: string, rating: number) => {
+    setBookings(bookings.map(b => b.id === id ? { ...b, rating } : b));
+  };
+
+  return (
+    <div className="space-y-8 max-w-4xl mx-auto py-8">
+      <div className="flex justify-between items-end">
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+            {language === 'en' ? 'My Bookings & Tracking' : 'मेरी बुकिंग'}
+          </h1>
+          <p className="text-gray-500 font-medium">Track your cooperative service providers in real-time.</p>
+        </div>
+        <Link href="/customer" className="text-indigo-600 font-bold hover:underline mb-1">← Back to Services</Link>
+      </div>
+
+      <div className="grid gap-6">
+        {myBookings.length === 0 ? (
+          <div className="bg-white p-12 rounded-3xl text-center border-2 border-dashed border-gray-200">
+            <p className="text-gray-500 text-lg font-bold">No bookings yet.</p>
+          </div>
+        ) : (
+          myBookings.map(booking => {
+            const service = mockServices.find(s => s.id === booking.serviceId);
+            const isEmergency = booking.timeSlot.includes('Emergency');
+            
+            return (
+              <div key={booking.id} className="bg-white border border-gray-200 rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-lg transition-all space-y-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-2xl font-bold text-gray-900">{service?.title || 'Service Booking'}</h3>
+                      {isEmergency && <span className="bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded text-xs uppercase tracking-wider border border-red-200">Emergency</span>}
+                    </div>
+                    <p className="text-gray-500 font-medium mt-1">{booking.date} | {booking.timeSlot}</p>
+                    <p className="text-gray-600 font-bold mt-2 flex items-center gap-2"><MapPin size={16}/> {booking.address}</p>
+                  </div>
+                  <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border font-bold shadow-sm">
+                    {getStatusIcon(booking.status)}
+                    <span className="text-gray-900">{booking.status}</span>
+                  </div>
+                </div>
+
+                {/* GPS Tracking Section for Active Bookings (Pending/Accepted) */}
+                {(booking.status === 'Accepted' || booking.status === 'Pending') && (
+                  <div className="mt-6 border-t border-gray-100 pt-6">
+                    <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                      <Navigation size={20} className="text-indigo-600"/> Live GPS Tracking
+                    </h4>
+                    <div className="relative bg-gray-100 border border-indigo-100 rounded-2xl h-80 overflow-hidden flex items-center justify-center shadow-inner">
+                      {/* Real interactive map iframe (OpenStreetMap) for high-fidelity demo */}
+                      <iframe 
+                        width="100%" 
+                        height="100%" 
+                        frameBorder="0" 
+                        scrolling="no" 
+                        src="https://www.openstreetmap.org/export/embed.html?bbox=77.10,28.50,77.30,28.70&layer=mapnik" 
+                        className="absolute inset-0 opacity-60 pointer-events-none"
+                      ></iframe>
+                      <div className="absolute inset-0 bg-indigo-600/5 mix-blend-overlay pointer-events-none"></div>
+                      
+                      {booking.status === 'Pending' ? (
+                        <div className="relative z-10 flex flex-col items-center">
+                          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-2 shadow-xl border-4 border-indigo-100 relative">
+                            <div className="absolute inset-0 rounded-full border-4 border-indigo-400 animate-ping opacity-50"></div>
+                            <Search className="text-indigo-400" size={24} />
+                          </div>
+                          <div className="bg-gray-900 text-white px-5 py-2.5 rounded-xl font-bold shadow-2xl text-sm text-center border border-gray-700 backdrop-blur-md bg-gray-900/90">
+                            Scanning Area<br/><span className="text-indigo-300">Searching for nearby workers...</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="relative z-10 flex flex-col items-center">
+                          {/* Worker Marker */}
+                          <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mb-2 shadow-xl border-4 border-white relative animate-bounce">
+                            <div className="absolute -bottom-2 w-4 h-4 bg-indigo-600 rotate-45 -z-10"></div>
+                            <Navigation className="text-white" size={28} />
+                          </div>
+                          <div className="bg-gray-900 text-white px-5 py-2.5 rounded-xl font-bold shadow-2xl text-sm text-center border border-gray-700 backdrop-blur-md bg-gray-900/90">
+                            Worker En Route<br/><span className="text-indigo-300">5 mins away</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {booking.status === 'Completed' && !booking.rating && (
+                  <div className="border-t border-gray-100 pt-6 mt-4">
+                    <p className="text-sm font-bold text-gray-700 mb-3">Rate your cooperative experience:</p>
+                    <div className="flex gap-2">
+                      {[1,2,3,4,5].map(star => (
+                        <button key={star} onClick={() => handleRate(booking.id, star)} className="text-gray-200 hover:text-yellow-400 hover:scale-125 transition-transform">
+                          <Star fill="currentColor" size={32} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {booking.rating && (
+                  <div className="border-t border-gray-100 pt-6 mt-4 flex items-center gap-2 text-yellow-500">
+                    <Star size={24} fill="currentColor" />
+                    <span className="font-bold text-gray-900">You rated {booking.rating} stars</span>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+}
