@@ -25,12 +25,13 @@ export interface Booking {
   customerId: string;
   workerId?: string;
   serviceId: string;
-  status: 'Pending' | 'Accepted' | 'Completed' | 'Flagged';
+  status: 'Pending' | 'Accepted' | 'Completed' | 'Flagged' | 'Cancelled';
   address: string;
   date: string;
   timeSlot: string;
   rating?: number;
   feedback?: string;
+  cancelReason?: string;
 }
 
 export const mockUsers: User[] = [

@@ -7,6 +7,8 @@ import Link from 'next/link';
 
 export default function OrderTracking() {
   const { bookings, currentUser, language, setBookings } = useAppContext();
+  const [cancelModalBookingId, setCancelModalBookingId] = React.useState<string | null>(null);
+  const [cancelReason, setCancelReason] = React.useState<string>('');
 
   if (!currentUser) return null;
 
@@ -17,12 +19,20 @@ export default function OrderTracking() {
       case 'Pending': return <Clock className="text-yellow-500" />;
       case 'Accepted': return <Navigation className="text-indigo-500" />;
       case 'Completed': return <CheckCircle className="text-emerald-500" />;
+      case 'Cancelled': return <AlertCircle className="text-red-500" />;
       default: return <AlertCircle className="text-red-500" />;
     }
   };
 
   const handleRate = (id: string, rating: number) => {
     setBookings(bookings.map(b => b.id === id ? { ...b, rating } : b));
+  };
+
+  const handleCancel = () => {
+    if (!cancelReason || !cancelModalBookingId) return;
+    setBookings(bookings.map(b => b.id === cancelModalBookingId ? { ...b, status: 'Cancelled', cancelReason } : b));
+    setCancelModalBookingId(null);
+    setCancelReason('');
   };
 
   return (
@@ -58,9 +68,19 @@ export default function OrderTracking() {
                     <p className="text-gray-500 font-medium mt-1">{booking.date} | {booking.timeSlot}</p>
                     <p className="text-gray-600 font-bold mt-2 flex items-center gap-2"><MapPin size={16}/> {booking.address}</p>
                   </div>
-                  <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border font-bold shadow-sm">
-                    {getStatusIcon(booking.status)}
-                    <span className="text-gray-900">{booking.status}</span>
+                  <div className="flex flex-col items-end gap-3">
+                    <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl border font-bold shadow-sm">
+                      {getStatusIcon(booking.status)}
+                      <span className="text-gray-900">{booking.status}</span>
+                    </div>
+                    {(booking.status === 'Pending' || booking.status === 'Accepted') && (
+                      <button 
+                        onClick={() => setCancelModalBookingId(booking.id)}
+                        className="text-sm font-bold text-red-600 hover:text-red-700 hover:underline px-2"
+                      >
+                        Cancel Booking
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -132,6 +152,45 @@ export default function OrderTracking() {
           })
         )}
       </div>
+
+      {/* Cancel Modal */}
+      {cancelModalBookingId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-md border-2 border-red-100 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 mb-4 text-red-600">
+              <AlertCircle size={28} />
+              <h2 className="text-2xl font-extrabold text-gray-900">Cancel Booking</h2>
+            </div>
+            <p className="text-gray-500 font-medium mb-6">Are you sure you want to cancel this booking? Please provide a reason for cancellation.</p>
+            
+            <textarea
+              className="w-full border-2 border-gray-200 rounded-2xl p-4 mb-6 focus:border-red-500 focus:outline-none focus:ring-4 focus:ring-red-500/10 transition-all font-medium resize-none h-32"
+              placeholder="E.g., I no longer need this service right now..."
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+            ></textarea>
+            
+            <div className="flex gap-4">
+              <button 
+                onClick={() => {
+                  setCancelModalBookingId(null);
+                  setCancelReason('');
+                }}
+                className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl transition-colors"
+              >
+                Go Back
+              </button>
+              <button 
+                onClick={handleCancel}
+                disabled={!cancelReason.trim()}
+                className="flex-1 py-3 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-colors shadow-lg shadow-red-500/30"
+              >
+                Confirm Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

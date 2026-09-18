@@ -40,8 +40,11 @@ export default function CustomerDashboard() {
         </button>
       </div>
 
-      <div className="relative bg-gradient-to-br from-indigo-700 to-violet-800 rounded-3xl p-8 sm:p-12 lg:p-16 text-white shadow-2xl shadow-indigo-900/20 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+      <div className="relative bg-gradient-to-br from-indigo-700 to-violet-800 rounded-3xl p-8 sm:p-12 lg:p-16 text-white shadow-2xl shadow-indigo-900/20">
+        <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+          <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+        </div>
         <div className="relative z-10 max-w-2xl">
           <span className="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-semibold mb-6">
             100% Cooperative Owned
@@ -59,7 +62,7 @@ export default function CustomerDashboard() {
             </div>
             <input 
               type="text" 
-              placeholder={language === 'en' ? "What do you need help with today?" : "आज आपको किस चीज़ में मदद चाहिए?"} 
+              placeholder={language === 'en' ? "What do you need help with today?" : "आप आज किस सेवा की तलाश में हैं?"} 
               className="w-full pl-12 pr-16 py-4 rounded-2xl border-2 border-transparent bg-white text-gray-900 focus:outline-none focus:border-indigo-500 shadow-xl text-lg transition-all"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -71,9 +74,38 @@ export default function CustomerDashboard() {
             >
               <Mic size={20} />
             </button>
+
+            {/* Google-style Search Dropdown */}
+            {search.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                {filteredServices.length > 0 ? (
+                  <ul className="py-2">
+                    {filteredServices.map((service) => (
+                      <li key={service.id}>
+                        <Link 
+                          href={`/customer/book/${service.id}`}
+                          className="flex items-center gap-4 px-6 py-3 hover:bg-indigo-50 transition-colors group/item"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center group-hover/item:bg-indigo-100 group-hover/item:text-indigo-600 transition-colors">
+                            <Search size={18} />
+                          </div>
+                          <div className="text-left">
+                            <p className="text-gray-900 font-bold group-hover/item:text-indigo-700">{service.title}</p>
+                            <p className="text-gray-500 text-sm font-medium">{service.category}</p>
+                          </div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="p-6 text-center text-gray-500">
+                    <p className="font-medium">No services found matching &quot;{search}&quot;</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
-        <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4 px-2">
@@ -88,7 +120,7 @@ export default function CustomerDashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-2">
-        {filteredServices.map(service => (
+        {mockServices.map(service => (
           <Link key={service.id} href={`/customer/book/${service.id}`} className="block group">
             <div className="bg-white rounded-3xl p-6 border-2 border-gray-100 shadow-sm hover:shadow-xl hover:border-indigo-400/30 transition-all duration-300 relative overflow-hidden flex flex-col h-full hover:-translate-y-1">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 group-hover:scale-150 transition-all duration-500 text-indigo-600">

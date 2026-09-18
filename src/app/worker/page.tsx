@@ -6,8 +6,10 @@ import Link from 'next/link';
 import { MapPin, CheckCircle, XCircle, Wallet, Users, Clock, AlertCircle, Star, Zap } from 'lucide-react';
 
 export default function WorkerDashboard() {
-  const { bookings, setBookings, currentUser, users, setUsers } = useAppContext();
+  const { users, currentUser, bookings, setBookings, setUsers } = useAppContext();
   const [availableNow, setAvailableNow] = useState(false);
+  const [cancelModalBookingId, setCancelModalBookingId] = useState<string | null>(null);
+  const [cancelReason, setCancelReason] = useState<string>('');
 
   if (!currentUser) return null;
 
@@ -18,6 +20,13 @@ export default function WorkerDashboard() {
     const newStatus = currentUser.status === 'online' ? 'offline' : 'online';
     setUsers(users.map(u => u.id === currentUser.id ? { ...u, status: newStatus } : u));
     currentUser.status = newStatus;
+  };
+
+  const handleCancel = () => {
+    if (!cancelReason || !cancelModalBookingId) return;
+    setBookings(bookings.map(b => b.id === cancelModalBookingId ? { ...b, status: 'Cancelled', cancelReason } : b));
+    setCancelModalBookingId(null);
+    setCancelReason('');
   };
 
   const handleAccept = (bookingId: string) => {
@@ -91,9 +100,15 @@ export default function WorkerDashboard() {
                         <p className="flex items-center gap-2"><MapPin size={16} className="text-indigo-500"/> {job.address}</p>
                         <p className="flex items-center gap-2"><Clock size={16} className="text-indigo-500"/> {job.date} | {job.timeSlot}</p>
                       </div>
-                      <div className="mt-6">
-                        <button onClick={() => handleComplete(job.id)} className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors shadow-lg shadow-indigo-500/30">
+                      <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                        <button onClick={() => handleComplete(job.id)} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors shadow-lg shadow-indigo-500/30">
                           <CheckCircle size={18} /> Mark as Completed
+                        </button>
+                        <button 
+                          onClick={() => setCancelModalBookingId(job.id)}
+                          className="flex-1 bg-white border-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 px-6 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
+                        >
+                          <XCircle size={18} /> Cancel Task
                         </button>
                       </div>
                     </div>
@@ -147,9 +162,6 @@ export default function WorkerDashboard() {
                           <button onClick={() => handleAccept(job.id)} className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 transition-all">
                             <CheckCircle size={18} /> Accept
                           </button>
-                          <button className="flex-1 bg-white border-2 border-gray-200 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 text-gray-600 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all">
-                            <XCircle size={18} /> Decline
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -170,6 +182,45 @@ export default function WorkerDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Cancel Modal */}
+      {cancelModalBookingId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-md border-2 border-red-100 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 mb-4 text-red-600">
+              <AlertCircle size={28} />
+              <h2 className="text-2xl font-extrabold text-gray-900">Cancel Task</h2>
+            </div>
+            <p className="text-gray-500 font-medium mb-6">Are you sure you want to cancel this assigned task? Providing a valid reason helps maintain your platform rating.</p>
+            
+            <textarea
+              className="w-full border-2 border-gray-200 rounded-2xl p-4 mb-6 focus:border-red-500 focus:outline-none focus:ring-4 focus:ring-red-500/10 transition-all font-medium resize-none h-32"
+              placeholder="E.g., Vehicle broke down, emergency at home..."
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
+            ></textarea>
+            
+            <div className="flex gap-4">
+              <button 
+                onClick={() => {
+                  setCancelModalBookingId(null);
+                  setCancelReason('');
+                }}
+                className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl transition-colors"
+              >
+                Go Back
+              </button>
+              <button 
+                onClick={handleCancel}
+                disabled={!cancelReason.trim()}
+                className="flex-1 py-3 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-colors shadow-lg shadow-red-500/30"
+              >
+                Confirm Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
