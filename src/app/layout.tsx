@@ -21,7 +21,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-gray-50 min-h-screen flex flex-col`}>
         <AppProvider>
           <Navbar />
-          <main className="flex-1 max-w-md w-full mx-auto sm:max-w-2xl md:max-w-4xl lg:max-w-7xl p-4 sm:p-6 lg:p-8">
+          <main className="flex-1 w-full">
             {children}
           </main>
         </AppProvider>

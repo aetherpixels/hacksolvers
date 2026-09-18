@@ -40,7 +40,8 @@ export default function BookingPage() {
   if (!service) return <div>Service not found</div>;
 
   return (
-    <div className="max-w-3xl mx-auto py-8">
+    <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="max-w-3xl mx-auto py-8">
       <Link href="/customer" className="inline-flex items-center gap-2 text-gray-500 hover:text-[#1aae55] font-semibold mb-6 transition-colors">
         <ArrowLeft size={20} /> Back to Services
       </Link>
@@ -192,6 +193,7 @@ export default function BookingPage() {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }

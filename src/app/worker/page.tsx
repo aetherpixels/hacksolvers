@@ -38,7 +38,8 @@ export default function WorkerDashboard() {
   };
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="space-y-8 max-w-7xl mx-auto py-8">
       <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mt-4 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-2 h-full bg-indigo-600"></div>
         <div>
@@ -221,6 +222,7 @@ export default function WorkerDashboard() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

@@ -36,7 +36,8 @@ export default function OrderTracking() {
   };
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto py-8">
+    <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="space-y-8 max-w-4xl mx-auto py-8">
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
@@ -191,6 +192,7 @@ export default function OrderTracking() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }
