@@ -39,7 +39,7 @@ export default function LoginPage() {
     <div className="flex flex-col lg:flex-row min-h-[calc(100vh-76px)] -m-4 sm:-m-6 lg:-m-8 font-sans overflow-hidden bg-slate-50">
       
       {/* Left Thematic Panel */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-indigo-600 via-blue-600 to-blue-800 text-white p-12 xl:p-20 flex-col justify-center relative">
+      <div className="hidden lg:flex w-1/2 bg-[#2563EB] text-white p-12 xl:p-20 flex-col justify-center relative">
         {/* Subtle background pattern / glowing radial blur */}
         <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-white/20 rounded-full blur-3xl mix-blend-overlay"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[30rem] h-[30rem] bg-indigo-900/40 rounded-full blur-3xl mix-blend-overlay"></div>
@@ -88,7 +88,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Login Panel */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-slate-50 relative z-10">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-[#F8FAFC] relative z-10">
         <div className="w-full max-w-md">
           
           <div className="text-center lg:text-left mb-8">
@@ -97,16 +97,16 @@ export default function LoginPage() {
           </div>
 
           {/* Segmented Control Role Tabs */}
-          <div className="flex p-1 bg-slate-200/60 rounded-xl mb-8">
+          <div className="flex p-1 bg-slate-200/60 rounded-xl mb-8 gap-1">
             {(['customer', 'worker', 'admin'] as const).map((role) => (
               <button
                 key={role}
                 type="button"
                 onClick={() => handleTabChange(role)}
-                className={`flex-1 py-2.5 text-sm font-bold rounded-lg capitalize transition-all duration-300 ${
+                className={`flex-1 py-2.5 text-sm font-bold rounded-lg capitalize transition-all duration-150 ${
                   roleTabs === role 
-                    ? 'bg-white text-blue-600 shadow-sm' 
-                    : 'text-slate-500 hover:text-slate-700'
+                    ? 'bg-[#1D4ED8] text-white shadow-[0_4px_0_0_#1e3a8a] translate-y-[-2px]' 
+                    : 'bg-white text-slate-500 hover:text-slate-700 shadow-[0_4px_0_0_#cbd5e1] hover:shadow-[0_4px_0_0_#94a3b8] hover:translate-y-[-2px] active:translate-y-[2px] active:shadow-[0_0px_0_0_#94a3b8]'
                 }`}
               >
                 {role}
@@ -115,15 +115,15 @@ export default function LoginPage() {
           </div>
 
           {/* Form Card */}
-          <form onSubmit={handleLogin} className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 space-y-6">
+          <form onSubmit={handleLogin} className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 space-y-6">
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Phone Number</label>
+                <label className="block text-sm font-semibold text-slate-900 mb-2">Phone Number</label>
                 <div className="relative flex items-center">
-                  <Phone className="absolute left-4 text-slate-400" size={20} />
+                  <Phone className="absolute left-4 text-slate-300" size={20} />
                   <input 
                     type="text" 
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 font-medium transition-colors duration-200"
+                    className="w-full pl-12 pr-4 py-3 bg-[#666666] border border-[#666666] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]/50 focus:border-[#2563EB] text-white placeholder-slate-300 font-medium transition-colors duration-200 disabled:bg-[#CBD5E1] disabled:text-slate-500"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
                   />
@@ -131,12 +131,12 @@ export default function LoginPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Password</label>
+                <label className="block text-sm font-semibold text-slate-900 mb-2">Password</label>
                 <div className="relative flex items-center">
-                  <Lock className="absolute left-4 text-slate-400" size={20} />
+                  <Lock className="absolute left-4 text-slate-300" size={20} />
                   <input 
                     type="password" 
-                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 font-medium transition-colors duration-200"
+                    className="w-full pl-12 pr-4 py-3 bg-[#666666] border border-[#666666] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2563EB]/50 focus:border-[#2563EB] text-white placeholder-slate-300 font-medium transition-colors duration-200 disabled:bg-[#CBD5E1] disabled:text-slate-500"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                   />
@@ -152,7 +152,7 @@ export default function LoginPage() {
             
             <button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-3.5 rounded-xl flex justify-center items-center gap-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/30"
+              className="w-full bg-[#2563EB] text-white font-bold py-4 rounded-full flex justify-center items-center gap-2 transition-all duration-150 shadow-[0_6px_0_0_#1d4ed8] hover:shadow-[0_6px_0_0_#1e40af] active:shadow-[0_0px_0_0_#1e40af] active:translate-y-[6px]"
             >
               Secure Login <ArrowRight size={20} />
             </button>
