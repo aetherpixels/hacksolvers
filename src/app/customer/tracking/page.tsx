@@ -192,6 +192,68 @@ export default function OrderTracking() {
           </div>
         </div>
       )}
+
+      {/* Payment Modal for Completed Jobs */}
+      {myBookings.find(b => b.status === 'Completed' && !b.isPaid) && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md">
+          {(() => {
+            const unpaidBooking = myBookings.find(b => b.status === 'Completed' && !b.isPaid)!;
+            const service = mockServices.find(s => s.id === unpaidBooking.serviceId);
+            return (
+              <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-lg border border-slate-200 animate-in zoom-in-95 duration-200">
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                    <CheckCircle size={32} />
+                  </div>
+                  <h2 className="text-2xl font-extrabold text-slate-900 mb-1">Job Completed!</h2>
+                  <p className="text-slate-500 font-medium">Your worker has finished the job. Please complete the payment.</p>
+                </div>
+                
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-slate-600 font-bold">{service?.title}</span>
+                    <span className="text-slate-900 font-black">{service?.priceRange}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm text-slate-500 pb-2 border-b border-slate-200">
+                    <span>Cooperative Service Fee (5%)</span>
+                    <span>Included</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-2">
+                    <span className="text-slate-900 font-bold">Total Amount Due</span>
+                    <span className="text-emerald-600 font-black text-lg">{service?.priceRange.split('-')[0].trim()}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-4 mb-8">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1">Card Number</label>
+                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" maxLength={19} className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-medium" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">Expiry Date</label>
+                      <input type="text" placeholder="MM/YY" maxLength={5} autoComplete="off" className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-medium" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-1">CVV</label>
+                      <input type="password" placeholder="XXX" maxLength={3} className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-medium" />
+                    </div>
+                  </div>
+                </div>
+                
+                <button 
+                  onClick={() => {
+                    setBookings(bookings.map(b => b.id === unpaidBooking.id ? { ...b, isPaid: true } : b));
+                  }}
+                  className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl transition-all duration-150 shadow-[0_4px_0_0_#047857] hover:shadow-[0_4px_0_0_#065f46] active:shadow-[0_0px_0_0_#065f46] active:translate-y-[4px] flex items-center justify-center gap-2"
+                >
+                  <CheckCircle size={20} /> Secure Checkout
+                </button>
+              </div>
+            );
+          })()}
+        </div>
+      )}
     </div>
     </div>
   );

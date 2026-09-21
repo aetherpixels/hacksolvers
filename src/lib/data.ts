@@ -32,6 +32,7 @@ export interface Booking {
   rating?: number;
   feedback?: string;
   cancelReason?: string;
+  isPaid?: boolean;
 }
 
 export const mockUsers: User[] = [
