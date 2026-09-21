@@ -63,6 +63,20 @@ export default function EarningsDashboard() {
             </div>
             <span className="font-bold text-orange-600 flex items-center">- <IndianRupee size={16}/> {socialSecurity.toFixed(2)}</span>
           </div>
+
+          <div className="flex justify-between items-center p-4 bg-emerald-50 rounded-xl border border-emerald-100 mt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg"><TrendingUp size={20} /></div>
+              <div>
+                <p className="font-semibold text-gray-900">Cooperative Dividend Tracker</p>
+                <p className="text-xs text-emerald-600">Your projected share of annual profits</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="font-bold text-emerald-600 flex items-center justify-end">+ <IndianRupee size={16}/> {(grossEarnings * 0.08).toFixed(2)}</span>
+              <p className="text-xs text-emerald-600/80 font-medium">Estimated (8% bonus)</p>
+            </div>
+          </div>
         </div>
         
         <div className="mt-8 p-4 bg-blue-50 text-blue-800 rounded-xl text-sm flex gap-3">
