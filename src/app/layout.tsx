@@ -9,6 +9,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "CoopGig - Cooperative Gig Services",
   description: "A digital service marketplace owned by Labour Cooperative Societies.",
+  manifest: "/manifest.json",
+};
+
+export const viewport = {
+  themeColor: "#2563EB",
 };
 
 export default function RootLayout({
