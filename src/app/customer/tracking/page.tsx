@@ -204,7 +204,7 @@ export default function OrderTracking() {
             const unpaidBooking = myBookings.find(b => b.status === 'Completed' && !b.isPaid)!;
             const service = mockServices.find(s => s.id === unpaidBooking.serviceId);
             return (
-              <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-lg border border-slate-200 animate-in zoom-in-95 duration-200">
+              <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto border border-slate-200 animate-in zoom-in-95 duration-200">
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
                     <CheckCircle size={32} />

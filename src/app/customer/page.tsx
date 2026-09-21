@@ -287,7 +287,7 @@ export default function CustomerDashboard() {
       {/* Emergency Modal */}
       {showEmergencyModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md">
-          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-lg border border-slate-200 animate-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto border border-slate-200 animate-in zoom-in-95 duration-200">
             <div className="flex items-center gap-3 mb-2 text-red-600">
               <Zap size={24} fill="currentColor" />
               <h2 className="text-2xl font-extrabold text-slate-900">What&apos;s the emergency?</h2>
