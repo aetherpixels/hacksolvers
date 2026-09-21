@@ -6,8 +6,8 @@ import { useRouter, usePathname } from 'next/navigation';
 interface AppContextType {
   currentUser: User | null;
   setCurrentUser: (u: User | null) => void;
-  language: 'en' | 'hi';
-  setLanguage: (l: 'en' | 'hi') => void;
+  language: 'en' | 'hi' | 'ta' | 'te' | 'mr';
+  setLanguage: (l: 'en' | 'hi' | 'ta' | 'te' | 'mr') => void;
   bookings: Booking[];
   setBookings: React.Dispatch<React.SetStateAction<Booking[]>>;
   users: User[];
@@ -18,7 +18,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [language, setLanguage] = useState<'en' | 'hi'>('en');
+  const [language, setLanguage] = useState<'en' | 'hi' | 'ta' | 'te' | 'mr'>('en');
   const [bookings, setBookings] = useState<Booking[]>(mockBookings);
   const [users, setUsers] = useState<User[]>(mockUsers);
   const router = useRouter();

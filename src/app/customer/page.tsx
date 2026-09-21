@@ -64,13 +64,18 @@ export default function CustomerDashboard() {
                 <input 
                   type="text" 
                   placeholder="Search for services (e.g. plumber, electrician)..." 
-                  className="w-full pl-14 pr-32 py-5 rounded-2xl bg-[#666666] text-white placeholder-slate-300 focus:outline-none focus:ring-4 focus:ring-blue-600/20 shadow-xl text-lg transition-all border border-[#666666]"
+                  className="w-full pl-14 pr-44 py-5 rounded-2xl bg-[#666666] text-white placeholder-slate-300 focus:outline-none focus:ring-4 focus:ring-blue-600/20 shadow-xl text-lg transition-all border border-[#666666]"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
-                <button className="absolute inset-y-2 right-2 px-6 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl transition-all duration-150 shadow-[0_4px_0_0_#1e3a8a] hover:shadow-[0_4px_0_0_#1e40af] active:shadow-[0_0px_0_0_#1e40af] active:translate-y-[4px]">
-                  Search
-                </button>
+                <div className="absolute inset-y-2 right-2 flex items-center gap-2">
+                  <button onClick={() => alert("Listening for Indian Languages Voice Input...")} className="p-3 bg-[#444444] hover:bg-[#333333] text-white rounded-xl transition-all duration-150 shadow-[0_4px_0_0_#222222] active:translate-y-[4px] active:shadow-[0_0px_0_0_#222222]" title="Voice Search (Supports Hindi, Tamil, Telugu, Marathi)">
+                    <Mic size={20} />
+                  </button>
+                  <button className="px-6 h-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl transition-all duration-150 shadow-[0_4px_0_0_#1e3a8a] hover:shadow-[0_4px_0_0_#1e40af] active:shadow-[0_0px_0_0_#1e40af] active:translate-y-[4px]">
+                    Search
+                  </button>
+                </div>
 
                 {/* Google-style Search Dropdown */}
                 {search.length > 0 && (
@@ -287,7 +292,7 @@ export default function CustomerDashboard() {
               <Zap size={24} fill="currentColor" />
               <h2 className="text-2xl font-extrabold text-slate-900">What&apos;s the emergency?</h2>
             </div>
-            <p className="text-slate-500 font-medium mb-6">Select the required service. We will dispatch the nearest verified worker immediately.</p>
+            <p className="text-slate-500 font-medium mb-6">Select the required service. Our <span className="font-bold text-blue-600">Geo-matching algorithm via Maps API</span> will immediately locate and dispatch the nearest verified cooperative worker to your exact GPS coordinates.</p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {mockServices.map(s => (

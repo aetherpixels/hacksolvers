@@ -2,13 +2,17 @@
 import React from 'react';
 import { useAppContext } from '@/components/Providers';
 import { mockServices } from '@/lib/data';
-import { Clock, CheckCircle, AlertCircle, Star, Navigation, MapPin, Search } from 'lucide-react';
+import { Clock, CheckCircle, AlertCircle, Star, Navigation, MapPin, Search, QrCode, Smartphone, CreditCard, ShieldPlus } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OrderTracking() {
   const { bookings, currentUser, language, setBookings } = useAppContext();
   const [cancelModalBookingId, setCancelModalBookingId] = React.useState<string | null>(null);
   const [cancelReason, setCancelReason] = React.useState<string>('');
+  const [paymentMethod, setPaymentMethod] = React.useState<'card' | 'upi'>('upi');
+  const [otpRequested, setOtpRequested] = React.useState(false);
+  const [otpValue, setOtpValue] = React.useState('');
+  const [insuranceOptIn, setInsuranceOptIn] = React.useState(true);
 
   if (!currentUser) return null;
 
@@ -209,45 +213,104 @@ export default function OrderTracking() {
                   <p className="text-slate-500 font-medium">Your worker has finished the job. Please complete the payment.</p>
                 </div>
                 
-                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-6">
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-4">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-slate-600 font-bold">{service?.title}</span>
                     <span className="text-slate-900 font-black">{service?.priceRange}</span>
                   </div>
-                  <div className="flex justify-between items-center text-sm text-slate-500 pb-2 border-b border-slate-200">
+                  <div className="flex justify-between items-center text-sm text-slate-500 pb-2">
                     <span>Cooperative Service Fee (5%)</span>
                     <span>Included</span>
                   </div>
-                  <div className="flex justify-between items-center pt-2">
+                  
+                  {/* Insurance / welfare integration feature */}
+                  <label onClick={() => setInsuranceOptIn(!insuranceOptIn)} className="flex items-center justify-between py-2 border-t border-slate-200 mt-1 cursor-pointer group">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${insuranceOptIn ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300'}`}>
+                        {insuranceOptIn && <CheckCircle size={14} />}
+                      </div>
+                      <span className="text-sm font-bold text-slate-700 flex items-center gap-1">
+                        <ShieldPlus size={16} className="text-emerald-500"/> Trust & Safety Insurance
+                      </span>
+                    </div>
+                    <span className="text-sm font-bold text-slate-600">+ ₹20</span>
+                  </label>
+
+                  <div className="flex justify-between items-center pt-2 border-t border-slate-200 mt-1">
                     <span className="text-slate-900 font-bold">Total Amount Due</span>
-                    <span className="text-emerald-600 font-black text-lg">{service?.priceRange.split('-')[0].trim()}</span>
+                    <span className="text-emerald-600 font-black text-lg">
+                      {insuranceOptIn ? `₹${parseInt(service?.priceRange.split('-')[0].replace('₹', '').trim() || '0') + 20}` : service?.priceRange.split('-')[0].trim()}
+                    </span>
                   </div>
                 </div>
 
-                <div className="space-y-4 mb-8">
-                  <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-1">Card Number</label>
-                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" maxLength={19} className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-medium" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-bold text-slate-700 mb-1">Expiry Date</label>
-                      <input type="text" placeholder="MM/YY" maxLength={5} autoComplete="off" className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-medium" />
+                {/* Payment Gateway Tabs (Next Phase Planned Features) */}
+                <div className="flex gap-2 mb-6 p-1 bg-slate-100 rounded-xl">
+                  <button onClick={() => setPaymentMethod('upi')} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${paymentMethod === 'upi' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}>
+                    <QrCode size={16}/> UPI / QR
+                  </button>
+                  <button onClick={() => setPaymentMethod('card')} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2 ${paymentMethod === 'card' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'}`}>
+                    <CreditCard size={16}/> Card
+                  </button>
+                </div>
+
+                <div className="space-y-4 mb-8 min-h-[160px]">
+                  {paymentMethod === 'card' ? (
+                    <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                      <div>
+                        <label className="block text-sm font-bold text-slate-700 mb-1">Card Number</label>
+                        <input type="text" placeholder="XXXX XXXX XXXX XXXX" maxLength={19} className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-medium" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <label className="block text-sm font-bold text-slate-700 mb-1">Expiry Date</label>
+                          <input type="text" placeholder="MM/YY" maxLength={5} autoComplete="off" className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-medium" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-bold text-slate-700 mb-1">CVV</label>
+                          <input type="password" placeholder="XXX" maxLength={3} className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-medium" />
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-bold text-slate-700 mb-1">CVV</label>
-                      <input type="password" placeholder="XXX" maxLength={3} className="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-medium" />
+                  ) : (
+                    <div className="animate-in fade-in slide-in-from-left-4 duration-300 flex flex-col items-center justify-center space-y-4">
+                      {!otpRequested ? (
+                        <>
+                          <div className="w-32 h-32 bg-slate-100 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center relative overflow-hidden group cursor-pointer hover:border-blue-500" onClick={() => setOtpRequested(true)}>
+                            <QrCode size={48} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                            <div className="absolute inset-0 bg-blue-600/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+                              <span className="bg-white text-blue-600 text-xs font-bold px-2 py-1 rounded">Scan</span>
+                            </div>
+                          </div>
+                          <p className="text-sm font-medium text-slate-500 text-center">Scan with any UPI app<br/>or <button onClick={() => setOtpRequested(true)} className="text-blue-600 font-bold hover:underline">enter Mobile Number</button></p>
+                        </>
+                      ) : (
+                        <div className="w-full animate-in zoom-in-95 duration-200">
+                          <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2"><Smartphone size={16} className="text-blue-600"/> Enter OTP sent to your phone</label>
+                          <input 
+                            type="text" 
+                            placeholder="6-digit OTP" 
+                            maxLength={6} 
+                            value={otpValue}
+                            onChange={(e) => setOtpValue(e.target.value.replace(/[^0-9]/g, ''))}
+                            className="w-full px-4 py-4 bg-white border-2 border-blue-200 text-center text-2xl tracking-[0.5em] rounded-xl focus:ring-4 focus:ring-blue-600/20 focus:border-blue-600 transition-all font-black text-slate-900" 
+                          />
+                          <p className="text-xs text-slate-500 mt-2 text-center">Mock OTP: Enter any 6 digits to proceed</p>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
                 
                 <button 
                   onClick={() => {
+                    if (paymentMethod === 'upi' && otpRequested && otpValue.length < 6) return;
                     setBookings(bookings.map(b => b.id === unpaidBooking.id ? { ...b, isPaid: true } : b));
                   }}
-                  className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl transition-all duration-150 shadow-[0_4px_0_0_#047857] hover:shadow-[0_4px_0_0_#065f46] active:shadow-[0_0px_0_0_#065f46] active:translate-y-[4px] flex items-center justify-center gap-2"
+                  disabled={paymentMethod === 'upi' && otpRequested && otpValue.length < 6}
+                  className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:hover:bg-emerald-600 text-white font-extrabold rounded-xl transition-all duration-150 shadow-[0_4px_0_0_#047857] hover:shadow-[0_4px_0_0_#065f46] active:shadow-[0_0px_0_0_#065f46] active:translate-y-[4px] flex items-center justify-center gap-2"
                 >
-                  <CheckCircle size={20} /> Secure Checkout
+                  <CheckCircle size={20} /> {(paymentMethod === 'upi' && !otpRequested) ? 'Simulate Scan to Pay' : 'Complete Payment'}
                 </button>
               </div>
             );

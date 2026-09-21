@@ -31,11 +31,14 @@ export function Navbar() {
 
         <div className="flex items-center gap-6">
           <button 
-            onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')} 
+            onClick={() => {
+              const langs: ('en' | 'hi' | 'ta' | 'te' | 'mr')[] = ['en', 'hi', 'ta', 'te', 'mr'];
+              setLanguage(langs[(langs.indexOf(language) + 1) % langs.length]);
+            }} 
             className="flex items-center gap-1.5 text-slate-300 hover:text-blue-400 font-semibold text-sm bg-slate-800 px-4 py-2 rounded-full border border-slate-700 hover:border-blue-500/50 transition-all duration-150 shadow-[0_4px_0_0_#020617] hover:shadow-[0_4px_0_0_#1e3a8a] active:shadow-[0_0px_0_0_#1e3a8a] active:translate-y-[4px]"
           >
             <Globe size={16} />
-            <span>{language === 'en' ? 'EN' : 'HI'}</span>
+            <span>{language.toUpperCase()}</span>
           </button>
 
           {currentUser && (

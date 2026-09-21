@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { useAppContext } from '@/components/Providers';
-import { Users, BarChart3, ShieldAlert, Check, X, ShieldCheck, TrendingUp, AlertCircle } from 'lucide-react';
+import { Users, BarChart3, ShieldAlert, Check, X, ShieldCheck, TrendingUp, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 
 export default function AdminDashboard() {
   const { users, setUsers, bookings, currentUser } = useAppContext();
@@ -224,6 +224,49 @@ export default function AdminDashboard() {
               <span className="font-black text-gray-900">25%</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* AI Demand Forecasting Section (Next Phase Planned Feature) */}
+      <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-8 rounded-3xl shadow-xl mt-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 relative z-10">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-xs font-bold uppercase tracking-wider mb-3">
+              <TrendingUp size={14} /> Predictive Engine Active
+            </div>
+            <h3 className="text-2xl font-black text-white">AI Demand Forecasting & Allocation</h3>
+            <p className="text-indigo-200 font-medium mt-1">Predictive worker allocation for the next 24 hours based on historical trends</p>
+          </div>
+          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all shadow-[0_4px_0_0_#1e40af] active:translate-y-[4px] active:shadow-[0_0px_0_0_#1e40af]">
+            Auto-Allocate Workers
+          </button>
+        </div>
+
+        <div className="grid md:grid-cols-4 gap-4 relative z-10">
+          {[
+            { region: 'North Zone', demand: 'High', predicted: 145, allocated: 110, icon: TrendingUp, color: 'text-rose-400', bg: 'bg-rose-500/20', border: 'border-rose-500/30' },
+            { region: 'South Zone', demand: 'Normal', predicted: 85, allocated: 90, icon: CheckCircle, color: 'text-emerald-400', bg: 'bg-emerald-500/20', border: 'border-emerald-500/30' },
+            { region: 'East Zone', demand: 'Surge expected', predicted: 210, allocated: 150, icon: AlertCircle, color: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500/30' },
+            { region: 'West Zone', demand: 'Low', predicted: 40, allocated: 45, icon: Clock, color: 'text-blue-400', bg: 'bg-blue-500/20', border: 'border-blue-500/30' },
+          ].map(zone => (
+            <div key={zone.region} className={`p-5 rounded-2xl border ${zone.border} bg-white/5 backdrop-blur-md flex flex-col justify-between hover:bg-white/10 transition-colors`}>
+              <div>
+                <h4 className="text-white font-bold text-lg mb-1">{zone.region}</h4>
+                <p className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1 ${zone.color}`}><zone.icon size={12}/> {zone.demand}</p>
+              </div>
+              <div className="mt-6">
+                <div className="flex justify-between items-end mb-2">
+                  <span className="text-slate-400 text-xs font-medium">Predicted Bookings</span>
+                  <span className="text-white font-black text-xl">{zone.predicted}</span>
+                </div>
+                <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                  <div className={`h-full ${zone.bg.replace('/20', '')}`} style={{ width: `${Math.min((zone.allocated / zone.predicted) * 100, 100)}%` }}></div>
+                </div>
+                <p className="text-right text-xs font-medium text-slate-500 mt-2">{zone.allocated} workers available</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
