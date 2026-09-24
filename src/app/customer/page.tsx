@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { Search, MapPin, Star, ShieldCheck, Zap, ArrowRight, Mic, ClipboardList, Users, CheckCircle, Award } from 'lucide-react';
+import { Search, MapPin, Star, ShieldCheck, Zap, ArrowRight, Mic, ClipboardList, Users, CheckCircle, Award, Wrench, Sparkles, Heart, Hammer, Wind, Paintbrush, Bug } from 'lucide-react';
 import Link from 'next/link';
 import { useAppContext } from '@/components/Providers';
 import { mockServices, mockUsers } from '@/lib/data';
@@ -14,6 +14,20 @@ export default function CustomerDashboard() {
 
   if (!currentUser) return null;
 
+  const renderIcon = (iconStr: string) => {
+    switch (iconStr) {
+      case 'wrench': return <Wrench size={20} />;
+      case 'zap': return <Zap size={20} />;
+      case 'sparkles': return <Sparkles size={20} />;
+      case 'heart': return <Heart size={20} />;
+      case 'hammer': return <Hammer size={20} />;
+      case 'wind': return <Wind size={20} />;
+      case 'brush': return <Paintbrush size={20} />;
+      case 'bug': return <Bug size={20} />;
+      default: return <Zap size={20} />;
+    }
+  };
+
   const filteredServices = mockServices.filter(s => 
     s.title.toLowerCase().includes(search.toLowerCase()) || 
     s.category.toLowerCase().includes(search.toLowerCase())
@@ -25,7 +39,11 @@ export default function CustomerDashboard() {
       's1': 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=400&q=80',
       's2': 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=400&q=80',
       's3': 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=400&q=80',
-      's4': 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=400&q=80'
+      's4': 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=400&q=80',
+      's5': 'https://images.unsplash.com/photo-1505798577917-a65157d3320a?auto=format&fit=crop&w=400&q=80', // Carpentry
+      's6': 'https://images.unsplash.com/photo-1558227691-41ea78d1f631?auto=format&fit=crop&w=400&q=80', // AC Repair
+      's7': 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=400&q=80', // Painting
+      's8': 'https://images.unsplash.com/photo-1620313550302-3f191b61c9ae?auto=format&fit=crop&w=400&q=80'  // Pest Control
     };
     return images[id] || 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=400&q=80';
   };
@@ -166,7 +184,7 @@ export default function CustomerDashboard() {
                     <img src={getServiceImage(service.id)} alt={service.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
                     <div className="absolute -bottom-4 left-4 w-12 h-12 bg-[#2563EB] rounded-xl flex items-center justify-center text-white shadow-lg border-2 border-white group-hover:-translate-y-2 transition-transform">
-                      <Zap size={20} />
+                      {renderIcon(service.icon)}
                     </div>
                   </div>
                   <div className="p-6 pt-8 flex flex-col flex-1">
@@ -241,19 +259,30 @@ export default function CustomerDashboard() {
             </div>
 
             <div className="grid sm:grid-cols-2 gap-6">
-              {mockUsers.filter(u => u.role === 'worker').slice(0, 2).map(worker => (
-                <div key={worker.id} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-center gap-4 hover:border-blue-300 transition-colors">
-                  <div className="w-20 h-20 bg-slate-100 rounded-2xl overflow-hidden shrink-0 border border-slate-200">
-                    <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(worker.name.replace(' (Worker)', ''))}&background=2563EB&color=fff&size=120`} alt={worker.name} className="w-full h-full object-cover"/>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-lg">{worker.name.replace(' (Worker)', '')}</h4>
-                    <p className="text-green-600 text-sm font-medium mb-1">Verified Professional</p>
-                    <div className="flex items-center gap-3 text-sm text-slate-500">
-                      <span className="flex items-center gap-1 text-yellow-500"><Star size={14} fill="currentColor"/> {worker.rating || 4.5}</span>
-                      <span className="flex items-center gap-1"><MapPin size={14}/> Local Area</span>
+              {mockUsers.filter(u => u.role === 'worker').slice(0, 4).map(worker => (
+                <div key={worker.id} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col hover:border-blue-300 transition-colors">
+                  <div className="flex items-start gap-4 mb-3">
+                    <div className="w-20 h-20 bg-slate-100 rounded-2xl overflow-hidden shrink-0 border border-slate-200">
+                      <img src={worker.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(worker.name.replace(' (Worker)', ''))}&background=2563EB&color=fff&size=120`} alt={worker.name} className="w-full h-full object-cover"/>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-lg leading-tight">{worker.name.replace(' (Worker)', '')}</h4>
+                      {worker.isVerified && <p className="text-emerald-600 text-[10px] uppercase font-bold tracking-wider mt-1 mb-1">Verified Professional</p>}
+                      <div className="flex items-center gap-3 text-sm text-slate-500 mt-1">
+                        <span className="flex items-center gap-1 text-yellow-500"><Star size={14} fill="currentColor"/> {worker.rating || 4.5}</span>
+                        <span className="flex items-center gap-1"><MapPin size={14}/> Local Area</span>
+                      </div>
                     </div>
                   </div>
+                  {worker.skills && (
+                    <div className="flex flex-wrap gap-2 mt-auto">
+                      {worker.skills.map(skill => (
+                        <span key={skill} className="bg-slate-50 text-slate-500 px-2.5 py-1 rounded-full text-xs font-semibold border border-slate-200">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
               
