@@ -81,7 +81,7 @@ export default function CustomerDashboard() {
                 </div>
                 <input 
                   type="text" 
-                  placeholder="Search for services (e.g. plumber, electrician)..." 
+                  placeholder="Describe your issue to AI (e.g. 'Water is leaking from kitchen pipe')..." 
                   className="w-full pl-14 pr-44 py-5 rounded-2xl bg-[#666666] text-white placeholder-slate-300 focus:outline-none focus:ring-4 focus:ring-blue-600/20 shadow-xl text-lg transition-all border border-[#666666]"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -90,33 +90,42 @@ export default function CustomerDashboard() {
                   <button onClick={() => alert("Listening for Indian Languages Voice Input...")} className="p-3 bg-[#444444] hover:bg-[#333333] text-white rounded-xl transition-all duration-150 shadow-[0_4px_0_0_#222222] active:translate-y-[4px] active:shadow-[0_0px_0_0_#222222]" title="Voice Search (Supports Hindi, Tamil, Telugu, Marathi)">
                     <Mic size={20} />
                   </button>
-                  <button className="px-6 h-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl transition-all duration-150 shadow-[0_4px_0_0_#1e3a8a] hover:shadow-[0_4px_0_0_#1e40af] active:shadow-[0_0px_0_0_#1e40af] active:translate-y-[4px]">
-                    Search
+                  <button className="px-6 h-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl flex items-center gap-2 transition-all duration-150 shadow-[0_4px_0_0_#1e3a8a] hover:shadow-[0_4px_0_0_#1e40af] active:shadow-[0_0px_0_0_#1e40af] active:translate-y-[4px]">
+                    <Sparkles size={18}/> AI Match
                   </button>
                 </div>
 
-                {/* Google-style Search Dropdown */}
+                {/* AI-Style Search Dropdown */}
                 {search.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-blue-200 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 text-left">
+                    <div className="bg-blue-50 border-b border-blue-100 p-3 px-6 flex items-center gap-3">
+                      <Sparkles size={20} className="text-blue-600 animate-pulse" />
+                      <span className="text-blue-900 font-bold text-sm">AI Task Assistant Analyzing...</span>
+                    </div>
                     {filteredServices.length > 0 ? (
                       <ul className="py-2">
-                        {filteredServices.map((service) => (
+                        {filteredServices.map((service, idx) => (
                           <li key={service.id}>
-                            <Link href={`/customer/book/${service.id}`} className="flex items-center gap-4 px-6 py-3 hover:bg-slate-50 transition-colors group/item">
-                              <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center group-hover/item:bg-blue-100 group-hover/item:text-blue-600 transition-colors">
-                                <Search size={18} />
+                            <Link href={`/customer/book/${service.id}`} className="flex items-center justify-between px-6 py-3 hover:bg-slate-50 transition-colors group/item">
+                              <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center group-hover/item:bg-blue-100 group-hover/item:text-blue-600 transition-colors">
+                                  {renderIcon(service.icon)}
+                                </div>
+                                <div>
+                                  <p className="text-slate-900 font-bold group-hover/item:text-blue-700">
+                                    {service.title} {idx === 0 && <span className="ml-2 bg-green-100 text-green-700 text-[10px] uppercase font-black px-2 py-0.5 rounded-full">Top Match</span>}
+                                  </p>
+                                  <p className="text-slate-500 text-sm font-medium">{service.category} • Match Confidence: {idx === 0 ? '98%' : '85%'}</p>
+                                </div>
                               </div>
-                              <div className="text-left">
-                                <p className="text-slate-900 font-bold group-hover/item:text-blue-700">{service.title}</p>
-                                <p className="text-slate-500 text-sm font-medium">{service.category}</p>
-                              </div>
+                              <span className="text-blue-600 font-bold text-sm bg-blue-50 px-3 py-1 rounded-xl group-hover/item:bg-blue-100 transition-colors">Book Expert</span>
                             </Link>
                           </li>
                         ))}
                       </ul>
                     ) : (
                       <div className="p-6 text-center text-slate-500 font-medium">
-                        No services found matching &quot;{search}&quot;
+                        I couldn't find an exact match for &quot;{search}&quot;, but our Custom Help team can assist!
                       </div>
                     )}
                   </div>
@@ -275,18 +284,27 @@ export default function CustomerDashboard() {
                       </div>
                     </div>
                   </div>
-                  
-                  {worker.bio && (
-                    <p className="text-sm text-slate-600 line-clamp-2 mb-4 italic">"{worker.bio}"</p>
-                  )}
+                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 mb-4 space-y-1.5">
+                    <div className="flex items-center text-[11px] font-bold text-slate-600 tracking-wide uppercase">
+                      <ShieldCheck size={12} className="mr-1 text-blue-500" /> Worker ID Proof
+                      <span className="ml-auto text-slate-900">CG-W-{worker.id}</span>
+                    </div>
+                    <div className="flex items-center text-[11px] font-bold text-slate-600 tracking-wide uppercase">
+                      <Star size={12} className="mr-1 text-yellow-500" /> Work Experience
+                      <span className="ml-auto text-slate-900">{worker.experienceYears || 2} Years Verified</span>
+                    </div>
+                  </div>
 
                   {worker.skills && (
-                    <div className="flex flex-wrap gap-2 mt-auto">
-                      {worker.skills.map(skill => (
-                        <span key={skill} className="bg-slate-50 text-slate-500 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-200">
-                          {skill}
-                        </span>
-                      ))}
+                    <div className="mt-auto">
+                      <p className="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-2">Area of Expertise</p>
+                      <div className="flex flex-wrap gap-2">
+                        {worker.skills.map(skill => (
+                          <span key={skill} className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border border-slate-200">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>

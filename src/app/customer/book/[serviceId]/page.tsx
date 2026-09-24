@@ -165,9 +165,26 @@ export default function BookingPage() {
                 ))}
               </div>
 
-              <div className="flex gap-4 pt-8 max-w-lg mx-auto">
+              <div className="max-w-lg mx-auto bg-blue-50 border border-blue-100 p-5 rounded-2xl mb-4">
+                <h3 className="font-extrabold text-blue-900 mb-2">Payment & Penalty Terms</h3>
+                <div className="space-y-2 text-sm text-blue-800">
+                  <div className="flex justify-between font-bold border-b border-blue-200 pb-2">
+                    <span>Estimated Service Cost</span>
+                    <span>{service.priceRange}</span>
+                  </div>
+                  <div className="flex justify-between font-bold text-blue-600">
+                    <span>50% Advance Required to Book</span>
+                    <span>50%</span>
+                  </div>
+                  <p className="text-xs text-blue-700 mt-2">
+                    <strong>Cancellation Policy:</strong> If you cancel after the worker is on the way, a 5% penalty will be deducted from your advance (4% to compensate the worker, 1% platform fee). If the worker cancels after accepting, their cooperative welfare fund will be penalized.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4 max-w-lg mx-auto">
                 <button onClick={() => setStep(1)} className="w-1/3 py-4 border-2 border-gray-200 rounded-xl hover:bg-gray-50 font-bold text-gray-600 transition-colors">Back</button>
-                <button onClick={handleBook} className="w-2/3 py-4 bg-[#1aae55] text-white rounded-xl hover:bg-green-600 font-bold shadow-lg shadow-green-500/30 transition-all text-lg">Confirm Booking</button>
+                <button onClick={handleBook} className="w-2/3 py-4 bg-[#1aae55] text-white rounded-xl hover:bg-green-600 font-bold shadow-lg shadow-green-500/30 transition-all text-lg">Pay 50% & Book</button>
               </div>
             </div>
           )}

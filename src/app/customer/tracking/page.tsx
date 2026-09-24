@@ -166,10 +166,17 @@ export default function OrderTracking() {
               <AlertCircle size={28} />
               <h2 className="text-2xl font-extrabold text-gray-900">Cancel Booking</h2>
             </div>
-            <p className="text-gray-500 font-medium mb-6">Are you sure you want to cancel this booking? Please provide a reason for cancellation.</p>
+            <p className="text-gray-500 font-medium mb-4">Are you sure you want to cancel this booking? Please provide a reason for cancellation.</p>
+            
+            <div className="bg-red-50 border border-red-200 p-4 rounded-xl mb-6">
+              <p className="text-sm font-bold text-red-800 mb-1">⚠️ Cancellation Penalty</p>
+              <p className="text-xs text-red-600 font-medium leading-relaxed">
+                If the worker is already on the way or you are cancelling last minute, a <strong>5% penalty</strong> will be deducted from your 50% advance payment. (4% goes to the worker, 1% to the platform).
+              </p>
+            </div>
             
             <textarea
-              className="w-full border-2 border-gray-200 rounded-2xl p-4 mb-6 focus:border-red-500 focus:outline-none focus:ring-4 focus:ring-red-500/10 transition-all font-medium resize-none h-32"
+              className="w-full border-2 border-gray-200 rounded-2xl p-4 mb-6 focus:border-red-500 focus:outline-none focus:ring-4 focus:ring-red-500/10 transition-all font-medium resize-none h-24"
               placeholder="E.g., I no longer need this service right now..."
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
