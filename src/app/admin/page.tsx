@@ -21,6 +21,8 @@ export default function AdminDashboard() {
     }
   };
 
+  const escalatedBookings = bookings.filter(b => b.isEscalated);
+
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
       <div className="space-y-8 max-w-7xl mx-auto py-8">
@@ -152,6 +154,57 @@ export default function AdminDashboard() {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Smart Escalation Queue */}
+      <div className="bg-red-50 p-6 md:p-8 rounded-3xl border border-red-200 shadow-sm transition-all mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 border-b border-red-200 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-red-100 text-red-600 rounded-2xl animate-pulse"><AlertCircle size={24} /></div>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">🚨 Smart Escalation Queue</h2>
+              <p className="text-sm text-gray-600 font-medium">SLA breaches, unassigned emergency requests, and cancellations.</p>
+            </div>
+          </div>
+          <span className="bg-red-600 text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-sm">
+            {escalatedBookings.length} Escalations
+          </span>
+        </div>
+        
+        <div className="space-y-4">
+          {escalatedBookings.length === 0 ? (
+             <div className="text-center py-6">
+                <CheckCircle className="mx-auto text-green-500 mb-2" size={32}/>
+                <p className="text-gray-700 font-bold">No active escalations. Everything is running smoothly!</p>
+             </div>
+          ) : (
+            escalatedBookings.map(booking => {
+              const customer = users.find(u => u.id === booking.customerId);
+              return (
+                <div key={booking.id} className="bg-white p-5 rounded-2xl border border-red-100 shadow-sm flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-bold text-gray-900 text-lg">Booking #{booking.id}</span>
+                      <span className="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">{booking.status}</span>
+                    </div>
+                    <p className="text-sm text-gray-600"><span className="font-semibold text-gray-800">Customer:</span> {customer?.name} • <span className="font-semibold text-gray-800">Date:</span> {booking.date} {booking.timeSlot}</p>
+                    <p className="text-sm font-bold text-red-600 mt-2 bg-red-50 p-2 rounded-lg inline-block border border-red-100">
+                      Reason: {booking.escalationReason}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 w-full lg:w-auto">
+                    <button className="flex-1 lg:flex-none px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm whitespace-nowrap">
+                      Manual Dispatch
+                    </button>
+                    <button className="flex-1 lg:flex-none px-4 py-2 bg-white text-gray-700 text-sm font-bold rounded-xl border border-gray-300 hover:bg-gray-50 transition-colors shadow-sm whitespace-nowrap">
+                      Contact Customer
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 

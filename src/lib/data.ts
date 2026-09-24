@@ -12,6 +12,9 @@ export interface User {
   status?: 'online' | 'offline'; // for worker
   photoUrl?: string; // Poster photo for worker
   skills?: string[]; // E.g., ['Plumbing', 'Pipe Fitting']
+  bio?: string;
+  jobsCompleted?: number;
+  experienceYears?: number;
 }
 
 export interface Service {
@@ -35,14 +38,17 @@ export interface Booking {
   feedback?: string;
   cancelReason?: string;
   isPaid?: boolean;
+  isEscalated?: boolean;
+  escalationReason?: string;
+  escalatedAt?: string;
 }
 
 export const mockUsers: User[] = [
   { id: 'u1', name: 'Ravi Kumar (Customer)', role: 'customer', phone: '9876543210' },
-  { id: 'u2', name: 'Sita Devi (Worker)', role: 'worker', phone: '9876543211', isVerified: true, rating: 4.8, weeklyEarnings: 1500, status: 'online', photoUrl: '/worker_cleaner.jpg', skills: ['Deep Cleaning', 'Sanitization'] },
-  { id: 'u3', name: 'Rajesh Plumber (Worker)', role: 'worker', phone: '9876543212', isVerified: true, rating: 4.9, weeklyEarnings: 2100, status: 'online', photoUrl: '/worker_plumber.jpg', skills: ['Plumbing Repair', 'Pipe Fitting'] },
+  { id: 'u2', name: 'Sita Devi (Worker)', role: 'worker', phone: '9876543211', isVerified: true, rating: 4.8, weeklyEarnings: 1500, status: 'online', photoUrl: '/worker_cleaner.jpg', skills: ['Deep Cleaning', 'Sanitization'], bio: 'Specialist in deep cleaning and hygiene maintenance with top-rated customer feedback.', jobsCompleted: 124, experienceYears: 5 },
+  { id: 'u3', name: 'Rajesh Plumber (Worker)', role: 'worker', phone: '9876543212', isVerified: true, rating: 4.9, weeklyEarnings: 2100, status: 'online', photoUrl: '/worker_plumber.jpg', skills: ['Plumbing Repair', 'Pipe Fitting'], bio: 'Expert plumber handling emergency leaks, pipe fittings, and modern bathroom installations.', jobsCompleted: 312, experienceYears: 8 },
   { id: 'u4', name: 'Admin Singh (Admin)', role: 'admin', phone: '9000000000' },
-  { id: 'u5', name: 'Priya Sharma (Worker)', role: 'worker', phone: '9876543213', isVerified: true, rating: 5.0, weeklyEarnings: 1800, status: 'online', photoUrl: '/worker_electrician.jpg', skills: ['Electrical Fixes', 'Wiring'] }
+  { id: 'u5', name: 'Priya Sharma (Worker)', role: 'worker', phone: '9876543213', isVerified: true, rating: 5.0, weeklyEarnings: 1800, status: 'online', photoUrl: '/worker_electrician.jpg', skills: ['Electrical Fixes', 'Wiring'], bio: 'Certified electrician specializing in home wiring, appliance repair, and safety audits.', jobsCompleted: 89, experienceYears: 3 }
 ];
 
 export const mockServices: Service[] = [
@@ -58,5 +64,7 @@ export const mockServices: Service[] = [
 
 export const mockBookings: Booking[] = [
   { id: 'b1', customerId: 'u1', serviceId: 's1', status: 'Pending', address: '123 MG Road, Delhi', date: '2026-10-01', timeSlot: '10:00 AM - 12:00 PM' },
-  { id: 'b2', customerId: 'u1', workerId: 'u2', serviceId: 's3', status: 'Completed', address: '123 MG Road, Delhi', date: '2026-09-15', timeSlot: '02:00 PM - 05:00 PM', rating: 5 }
+  { id: 'b2', customerId: 'u1', workerId: 'u2', serviceId: 's3', status: 'Completed', address: '123 MG Road, Delhi', date: '2026-09-15', timeSlot: '02:00 PM - 05:00 PM', rating: 5 },
+  { id: 'b3', customerId: 'u1', serviceId: 's2', status: 'Pending', address: '456 Tech Park, Delhi', date: '2026-09-24', timeSlot: '09:00 AM - 11:00 AM', isEscalated: true, escalationReason: 'SLA Breach: Unassigned for > 30 minutes. Customer waiting.', escalatedAt: new Date().toISOString() },
+  { id: 'b4', customerId: 'u1', serviceId: 's6', status: 'Cancelled', address: '789 Green Enclave, Delhi', date: '2026-09-24', timeSlot: '01:00 PM - 03:00 PM', isEscalated: true, escalationReason: 'Worker cancelled last minute. Needs emergency reassignment.', escalatedAt: new Date().toISOString() }
 ];

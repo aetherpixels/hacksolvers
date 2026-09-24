@@ -268,16 +268,22 @@ export default function CustomerDashboard() {
                     <div>
                       <h4 className="font-bold text-slate-900 text-lg leading-tight">{worker.name.replace(' (Worker)', '')}</h4>
                       {worker.isVerified && <p className="text-emerald-600 text-[10px] uppercase font-bold tracking-wider mt-1 mb-1">Verified Professional</p>}
-                      <div className="flex items-center gap-3 text-sm text-slate-500 mt-1">
-                        <span className="flex items-center gap-1 text-yellow-500"><Star size={14} fill="currentColor"/> {worker.rating || 4.5}</span>
-                        <span className="flex items-center gap-1"><MapPin size={14}/> Local Area</span>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500 mt-1">
+                        <span className="flex items-center gap-1 text-yellow-500 font-bold"><Star size={14} fill="currentColor"/> {worker.rating || 4.5}</span>
+                        {worker.jobsCompleted && <span className="font-semibold text-slate-600">{worker.jobsCompleted} jobs</span>}
+                        {worker.experienceYears && <span className="font-semibold text-slate-600">{worker.experienceYears}y exp</span>}
                       </div>
                     </div>
                   </div>
+                  
+                  {worker.bio && (
+                    <p className="text-sm text-slate-600 line-clamp-2 mb-4 italic">"{worker.bio}"</p>
+                  )}
+
                   {worker.skills && (
                     <div className="flex flex-wrap gap-2 mt-auto">
                       {worker.skills.map(skill => (
-                        <span key={skill} className="bg-slate-50 text-slate-500 px-2.5 py-1 rounded-full text-xs font-semibold border border-slate-200">
+                        <span key={skill} className="bg-slate-50 text-slate-500 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border border-slate-200">
                           {skill}
                         </span>
                       ))}
