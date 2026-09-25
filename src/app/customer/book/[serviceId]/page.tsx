@@ -15,6 +15,7 @@ export default function BookingPage() {
   const [address, setAddress] = useState('');
   const [date, setDate] = useState('');
   const [timeSlot, setTimeSlot] = useState('Morning (09:00 AM - 12:00 PM)');
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   if (!currentUser) return null;
 
@@ -24,17 +25,23 @@ export default function BookingPage() {
   const nearbyWorkers = mockUsers.filter(u => u.role === 'worker' && u.status === 'online');
 
   const handleBook = () => {
-    const newBooking = {
-      id: `b${Date.now()}`,
-      customerId: currentUser.id,
-      serviceId: service?.id || '',
-      status: 'Pending' as const,
-      address,
-      date,
-      timeSlot
-    };
-    setBookings([newBooking, ...bookings]);
-    setStep(3); // Success step
+    setIsProcessingPayment(true);
+    // Simulate payment gateway delay
+    setTimeout(() => {
+      const newBooking = {
+        id: `b${Date.now()}`,
+        customerId: currentUser.id,
+        serviceId: service?.id || '',
+        status: 'Pending' as const,
+        address,
+        date,
+        timeSlot,
+        isPaid: false // It's only 50% advance, not fully paid
+      };
+      setBookings([newBooking, ...bookings]);
+      setIsProcessingPayment(false);
+      setStep(3); // Success step
+    }, 2000);
   };
 
   if (!service) return <div>Service not found</div>;
@@ -183,8 +190,17 @@ export default function BookingPage() {
               </div>
 
               <div className="flex gap-4 max-w-lg mx-auto">
-                <button onClick={() => setStep(1)} className="w-1/3 py-4 border-2 border-gray-200 rounded-xl hover:bg-gray-50 font-bold text-gray-600 transition-colors">Back</button>
-                <button onClick={handleBook} className="w-2/3 py-4 bg-[#1aae55] text-white rounded-xl hover:bg-green-600 font-bold shadow-lg shadow-green-500/30 transition-all text-lg">Pay 50% & Book</button>
+                <button disabled={isProcessingPayment} onClick={() => setStep(1)} className="w-1/3 py-4 border-2 border-gray-200 rounded-xl hover:bg-gray-50 font-bold text-gray-600 transition-colors disabled:opacity-50">Back</button>
+                <button disabled={isProcessingPayment} onClick={handleBook} className="w-2/3 py-4 bg-[#1aae55] text-white rounded-xl hover:bg-green-600 font-bold shadow-lg shadow-green-500/30 transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-80">
+                  {isProcessingPayment ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Processing UPI...
+                    </>
+                  ) : (
+                    "Pay 50% Advance & Book"
+                  )}
+                </button>
               </div>
             </div>
           )}

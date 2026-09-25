@@ -32,8 +32,27 @@ export default function OrderTracking() {
     setBookings(bookings.map(b => b.id === id ? { ...b, rating } : b));
   };
 
+  const [cancelReceipt, setCancelReceipt] = React.useState<{ bookingId: string, penalty: number, refund: number } | null>(null);
+
   const handleCancel = () => {
     if (!cancelReason || !cancelModalBookingId) return;
+    
+    // Process Penalty Logic (Mock)
+    const booking = myBookings.find(b => b.id === cancelModalBookingId);
+    if (booking) {
+      const service = mockServices.find(s => s.id === booking.serviceId);
+      const estTotal = parseInt(service?.priceRange.split('-')[0].replace('₹', '').trim() || '1000');
+      const advancePaid = estTotal * 0.5; // 50% advance
+      const penaltyAmount = advancePaid * 0.05; // 5% penalty
+      const refundAmount = advancePaid - penaltyAmount;
+      
+      setCancelReceipt({
+        bookingId: booking.id,
+        penalty: penaltyAmount,
+        refund: refundAmount
+      });
+    }
+
     setBookings(bookings.map(b => b.id === cancelModalBookingId ? { ...b, status: 'Cancelled', cancelReason } : b));
     setCancelModalBookingId(null);
     setCancelReason('');
@@ -322,6 +341,45 @@ export default function OrderTracking() {
               </div>
             );
           })()}
+        </div>
+      )}
+
+      {/* Cancellation Penalty Receipt Modal */}
+      {cancelReceipt && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-md">
+          <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-sm border-2 border-red-100 animate-in zoom-in-95 duration-300">
+            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle size={32} />
+            </div>
+            <h2 className="text-2xl font-black text-center text-gray-900 mb-2">Booking Cancelled</h2>
+            <p className="text-center text-gray-500 font-medium mb-6">Your service request has been cancelled.</p>
+            
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6 space-y-3">
+              <h3 className="font-bold text-gray-800 border-b border-gray-200 pb-2 text-sm uppercase tracking-wide">Advance & Penalty Summary</h3>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Advance Paid</span>
+                <span className="font-bold text-gray-900">₹{cancelReceipt.refund + cancelReceipt.penalty}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-red-600 font-medium">Cancellation Penalty (5%)</span>
+                <span className="font-bold text-red-600">-₹{cancelReceipt.penalty}</span>
+              </div>
+              <div className="flex justify-between text-sm pt-2 border-t border-gray-200">
+                <span className="text-emerald-700 font-bold">Total Refunded to Wallet</span>
+                <span className="font-black text-emerald-700 text-lg">₹{cancelReceipt.refund}</span>
+              </div>
+              <p className="text-[10px] text-gray-400 leading-tight mt-2 italic">
+                * 4% of the penalty is transferred directly to the worker's cooperative welfare fund for their lost time. 1% is retained as a platform service fee.
+              </p>
+            </div>
+            
+            <button 
+              onClick={() => setCancelReceipt(null)}
+              className="w-full py-3.5 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition-colors shadow-lg"
+            >
+              Acknowledge & Close
+            </button>
+          </div>
         </div>
       )}
     </div>
