@@ -41,7 +41,8 @@ export default function OrderTracking() {
     const booking = myBookings.find(b => b.id === cancelModalBookingId);
     if (booking) {
       const service = mockServices.find(s => s.id === booking.serviceId);
-      const estTotal = parseInt(service?.priceRange.split('-')[0].replace('₹', '').trim() || '1000');
+      const priceString = service?.priceRange || '₹1000';
+      const estTotal = parseInt(priceString.split('-')[0].replace('₹', '').replace(',', '').trim() || '1000');
       const advancePaid = estTotal * 0.5; // 50% advance
       const penaltyAmount = advancePaid * 0.05; // 5% penalty
       const refundAmount = advancePaid - penaltyAmount;
@@ -265,7 +266,11 @@ export default function OrderTracking() {
                   <div className="flex justify-between items-center pt-2 border-t border-slate-200 mt-1">
                     <span className="text-slate-900 font-bold">Total Amount Due</span>
                     <span className="text-emerald-600 font-black text-lg">
-                      {insuranceOptIn ? `₹${parseInt(service?.priceRange.split('-')[0].replace('₹', '').trim() || '0') + 20}` : service?.priceRange.split('-')[0].trim()}
+                      {(() => {
+                        const basePrice = service?.priceRange || '₹0';
+                        const priceNum = parseInt(basePrice.split('-')[0].replace('₹', '').replace(',', '').trim() || '0');
+                        return insuranceOptIn ? `₹${priceNum + 20}` : basePrice.split('-')[0].trim();
+                      })()}
                     </span>
                   </div>
                 </div>
