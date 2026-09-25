@@ -125,7 +125,7 @@ export default function CustomerDashboard() {
                       </ul>
                     ) : (
                       <div className="p-6 text-center text-slate-500 font-medium">
-                        I couldn't find an exact match for &quot;{search}&quot;, but our Custom Help team can assist!
+                        I couldn&apos;t find an exact match for &quot;{search}&quot;, but our Custom Help team can assist!
                       </div>
                     )}
                   </div>

@@ -13,6 +13,7 @@ export default function OrderTracking() {
   const [otpRequested, setOtpRequested] = React.useState(false);
   const [otpValue, setOtpValue] = React.useState('');
   const [insuranceOptIn, setInsuranceOptIn] = React.useState(true);
+  const [cancelReceipt, setCancelReceipt] = React.useState<{ bookingId: string, penalty: number, refund: number } | null>(null);
 
   if (!currentUser) return null;
 
@@ -31,8 +32,6 @@ export default function OrderTracking() {
   const handleRate = (id: string, rating: number) => {
     setBookings(bookings.map(b => b.id === id ? { ...b, rating } : b));
   };
-
-  const [cancelReceipt, setCancelReceipt] = React.useState<{ bookingId: string, penalty: number, refund: number } | null>(null);
 
   const handleCancel = () => {
     if (!cancelReason || !cancelModalBookingId) return;
@@ -374,7 +373,7 @@ export default function OrderTracking() {
                 <span className="font-black text-emerald-700 text-lg">₹{cancelReceipt.refund}</span>
               </div>
               <p className="text-[10px] text-gray-400 leading-tight mt-2 italic">
-                * 4% of the penalty is transferred directly to the worker's cooperative welfare fund for their lost time. 1% is retained as a platform service fee.
+                * 4% of the penalty is transferred directly to the worker&apos;s cooperative welfare fund for their lost time. 1% is retained as a platform service fee.
               </p>
             </div>
             
